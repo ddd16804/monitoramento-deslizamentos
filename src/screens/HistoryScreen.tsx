@@ -23,7 +23,7 @@ export default function HistoryScreen() {
     try {
       setRefreshing(true);
       const data = await getReadings();
-      setReadings(data.reverse()); // Lista mostra mais recente primeiro
+      setReadings(data.reverse());
     } catch (error) {
       console.error('Erro ao carregar histórico:', error);
       Alert.alert('Erro', 'Não foi possível carregar o histórico');
@@ -44,10 +44,8 @@ export default function HistoryScreen() {
     }
   };
 
-  // Prepara dados para o gráfico (ordem cronológica correta)
   const prepareChartData = () => {
-    const orderedReadings = [...readings].reverse(); // Inverte para gráfico
-    
+    const orderedReadings = [...readings].reverse();
     return {
       labels: orderedReadings.map(item => 
         new Date(item.date).toLocaleDateString('pt-BR', { 
@@ -102,7 +100,6 @@ export default function HistoryScreen() {
         </View>
       ) : (
         <ScrollView>
-          {/* Gráfico - Dados em ordem cronológica */}
           <View style={styles.chartContainer}>
             <Text style={styles.chartTitle}>Variação Histórica</Text>
             <LineChart
@@ -139,14 +136,13 @@ export default function HistoryScreen() {
             />
           </View>
 
-          {/* Lista - Mostra mais recente primeiro */}
           <FlatList
             data={readings}
             keyExtractor={(item, index) => index.toString()}
             renderItem={({ item }) => (
               <View style={[styles.item, {
                 borderLeftColor: item.riskLevel === 'alto' ? '#E74C3C' :
-                  item.riskLevel === 'médio' ? '#F39C12' : '#2ECC71'
+                                 item.riskLevel === 'médio' ? '#F39C12' : '#2ECC71'
               }]}>
                 <Text style={styles.itemDate}>
                   {new Date(item.date).toLocaleDateString('pt-BR')} às{' '}
@@ -155,24 +151,22 @@ export default function HistoryScreen() {
                     minute: '2-digit'
                   })}
                 </Text>
+                
                 <View style={styles.itemRow}>
-                  <Text style={styles.itemLabel}>Umidade:</Text>
-                  <Text style={styles.itemValue}>{item.humidity}%</Text>
+                  <Text style={styles.itemText}>Umidade: {item.humidity}%</Text>
                 </View>
                 <View style={styles.itemRow}>
-                  <Text style={styles.itemLabel}>Inclinação:</Text>
-                  <Text style={styles.itemValue}>{item.inclination}°</Text>
+                  <Text style={styles.itemText}>Inclinação: {item.inclination}°</Text>
                 </View>
                 <View style={styles.itemRow}>
-                  <Text style={styles.itemLabel}>Risco:</Text>
                   <Text style={[
-                    styles.itemValue,
+                    styles.itemText,
                     {
                       color: item.riskLevel === 'alto' ? '#E74C3C' :
-                        item.riskLevel === 'médio' ? '#F39C12' : '#2ECC71'
+                             item.riskLevel === 'médio' ? '#F39C12' : '#2ECC71'
                     }
                   ]}>
-                    {item.riskLevel.toUpperCase()}
+                    Risco: {item.riskLevel.toUpperCase()}
                   </Text>
                 </View>
               </View>
@@ -252,17 +246,12 @@ const styles = StyleSheet.create({
     marginBottom: 8
   },
   itemRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginVertical: 3
+    marginVertical: 2
   },
-  itemLabel: {
+  itemText: {
     fontSize: 16,
-    color: '#555'
-  },
-  itemValue: {
-    fontSize: 16,
-    fontWeight: '500'
+    color: '#555',
+    textAlign: 'left'
   },
   listContent: {
     paddingBottom: 20
