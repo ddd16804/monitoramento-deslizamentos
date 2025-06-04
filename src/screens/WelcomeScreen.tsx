@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 export default function WelcomeScreen() {
@@ -8,11 +8,11 @@ export default function WelcomeScreen() {
   return (
     <View style={styles.container}>
       <Image 
-        source={require('../../assets/alerta.png')}
+        source={require('../../assets/alerta.png')} // Verifique o caminho
         style={styles.logo}
       />
       <Text style={styles.title}>Alerta Deslizamentos</Text>
-      <Text style={styles.subtitle}>Monitoramento inteligente de áreas de risco</Text>
+      <Text style={styles.subtitle}>Monitoramento inteligente</Text>
       
       <TouchableOpacity 
         style={styles.button}
@@ -29,41 +29,35 @@ const styles = StyleSheet.create({
     flex: 1, 
     justifyContent: 'center', 
     alignItems: 'center', 
-    padding: 20,
-    backgroundColor: '#f5f5f5'
+    backgroundColor: '#f8f9fa'
   },
-  logo: { 
-    width: 150, 
-    height: 150, 
-    marginBottom: 30 
+  logo: {
+    width: 150,
+    height: 150,
+    marginBottom: 30
   },
-  title: { 
-    fontSize: 28, 
-    fontWeight: 'bold', 
-    marginBottom: 10,
-    color: '#2E86C1'
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#2E86C1',
+    marginBottom: 10
   },
-  subtitle: { 
-    fontSize: 16, 
-    color: '#666', 
-    marginBottom: 40, 
-    textAlign: 'center' 
+  subtitle: {
+    fontSize: 16,
+    color: '#666',
+    marginBottom: 40
   },
   button: {
     backgroundColor: '#2E86C1',
     padding: 15,
     borderRadius: 10,
-    width: '100%',
+    width: '80%',
     alignItems: 'center',
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
+    elevation: 3
   },
-  buttonText: { 
-    color: 'white', 
-    fontWeight: 'bold', 
-    fontSize: 16 
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 16
   }
 });

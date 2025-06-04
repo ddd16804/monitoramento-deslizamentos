@@ -1,13 +1,36 @@
-export const calculateRisk = (humidity: number, inclination: number) => {
-  if (humidity > 85 && inclination > 20) return 'alto';
-  if (humidity > 70 || inclination > 15) return 'médio';
-  return 'baixo';
-};
+// Versão final com todos os sensores integrados
+export const calculateRisk = (
+  humidity: number,
+  inclination: number,
+  rain: number,
+  vibration: number
+): 'baixo' | 'médio' | 'alto' => {
+  
+  // Valores críticos (ajuste conforme necessidade)
+  const LIMITES = {
+    HUMIDADE_ALTA: 90,
+    INCLINACAO_ALTA: 45,
+    CHUVA_ALERTA: 30,
+    VIBRACAO_ALERTA: 5
+  };
 
-export const getRiskColor = (riskLevel: string) => {
-  switch (riskLevel) {
-    case 'alto': return '#E74C3C';
-    case 'médio': return '#F39C12';
-    default: return '#2ECC71';
+  // Lógica hierárquica
+  if (
+    humidity > LIMITES.HUMIDADE_ALTA || 
+    inclination > LIMITES.INCLINACAO_ALTA ||
+    rain > LIMITES.CHUVA_ALERTA ||
+    vibration > LIMITES.VIBRACAO_ALERTA
+  ) {
+    return 'alto';
   }
+
+  if (
+    humidity > 80 || 
+    inclination > 30 ||
+    rain > 15
+  ) {
+    return 'médio';
+  }
+
+  return 'baixo';
 };

@@ -1,28 +1,37 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { getRiskColor } from '../utils/riskCalculator';
 
-export default function RiskIndicator({ level }) {
-  const color = getRiskColor(level);
-  const textColor = level === 'baixo' ? '#333' : '#fff';
-  
+const getRiskColor = (level: string) => {
+  switch(level) {
+    case 'alto': return '#E74C3C'; // Vermelho
+    case 'médio': return '#F39C12'; // Laranja
+    default: return '#2ECC71'; // Verde
+  }
+};
+
+export default function RiskIndicator({ level }: { level: string }) {
   return (
-    <View style={[styles.container, { backgroundColor: color }]}>
-      <Text style={[styles.text, { color: textColor }]}>Nível de Risco: {level.toUpperCase()}</Text>
+    <View style={[
+      styles.container,
+      { backgroundColor: getRiskColor(level) }
+    ]}>
+      <Text style={styles.text}>NÍVEL DE RISCO: {level.toUpperCase()}</Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
-    borderRadius: 10,
-    marginVertical: 10,
+    padding: 15,
+    borderRadius: 8,
+    marginBottom: 15,
     alignItems: 'center',
     elevation: 3
   },
   text: {
+    color: 'white',
     fontWeight: 'bold',
-    fontSize: 18
+    fontSize: 16,
+    letterSpacing: 1
   }
 });

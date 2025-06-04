@@ -8,27 +8,40 @@ export default function DataInputScreen() {
   const navigation = useNavigation();
   const [humidity, setHumidity] = useState('');
   const [inclination, setInclination] = useState('');
+  const [rain, setRain] = useState('');
+  const [vibration, setVibration] = useState('');
+
+  // Simulação automática de sensores
+  const simulateSensors = () => {
+    setHumidity((Math.random() * 100).toFixed(1));
+    setInclination((Math.random() * 45).toFixed(1));
+    setRain((Math.random() * 50).toFixed(1));
+    setVibration((Math.random() * 10).toFixed(1));
+  };
 
   const handleSubmit = async () => {
+    // Validação mínima
     if (!humidity || !inclination) {
-      Alert.alert('Erro', 'Por favor, preencha todos os campos');
+      Alert.alert('Erro', 'Preencha pelo menos umidade e inclinação');
       return;
     }
-  
 
     const reading = {
       humidity: Number(humidity),
       inclination: Number(inclination),
+      rain: Number(rain || 0),
+      vibration: Number(vibration || 0),
       date: new Date().toISOString(),
-      riskLevel: calculateRisk(Number(humidity), Number(inclination))
+      riskLevel: calculateRisk(
+        Number(humidity),
+        Number(inclination),
+        Number(rain || 0),
+        Number(vibration || 0)
+      )
     };
-    
+
     await saveReading(reading);
-    navigation.navigate('RiskView', { 
-      riskLevel: reading.riskLevel,
-      humidity: reading.humidity,
-      inclination: reading.inclination
-    });
+    navigation.navigate('RiskView', reading);
   };
 
   return (
@@ -50,6 +63,31 @@ export default function DataInputScreen() {
         value={inclination}
         onChangeText={setInclination}
       />
+
+      <Text style={styles.label}>Chuva (mm/h)</Text>
+      <TextInput
+        style={styles.input}
+        keyboardType="numeric"
+        placeholder="Ex: 20"
+        value={rain}
+        onChangeText={setRain}
+      />
+
+      <Text style={styles.label}>Vibração (Hz)</Text>
+      <TextInput
+        style={styles.input}
+        keyboardType="numeric"
+        placeholder="Ex: 5"
+        value={vibration}
+        onChangeText={setVibration}
+      />
+
+      <TouchableOpacity 
+        style={styles.secondaryButton}
+        onPress={simulateSensors}
+      >
+        <Text style={styles.secondaryButtonText}>Simular Sensores</Text>
+      </TouchableOpacity>
 
       <TouchableOpacity 
         style={[styles.button, (!humidity || !inclination) && styles.disabledButton]}

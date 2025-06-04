@@ -1,41 +1,65 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import RiskIndicator from '../components/RiskIndicator';
+import ActuatorSimulation from '../components/ActuatorSimulation';
+
+type RiskViewParams = {
+  riskLevel?: 'baixo' | 'médio' | 'alto';
+  humidity?: number;
+  inclination?: number;
+  rain?: number;
+  vibration?: number;
+};
 
 export default function RiskViewScreen() {
   const navigation = useNavigation();
-  const route = useRoute();
-  const { riskLevel, humidity, inclination } = route.params;
+  const { params } = useRoute();
+
+  // Fallback seguro com tipagem
+  const {
+    riskLevel = 'baixo',
+    humidity = 0,
+    inclination = 0,
+    rain = 0,
+    vibration = 0
+  } = params as RiskViewParams || {};
 
   const getRiskDescription = () => {
     switch(riskLevel) {
-      case 'alto':
-        return 'Área com alto risco de deslizamento. Evacuação recomendada.';
-      case 'médio':
-        return 'Área com risco moderado. Monitoramento constante necessário.';
-      default:
-        return 'Área estável. Continue monitorando regularmente.';
+      case 'alto': return '🚨 ÁREA COM RISCO ELEVADO! Evacue imediatamente.';
+      case 'médio': return '⚠️ Risco moderado. Monitore constantemente.';
+      default: return '✅ Área estável.';
     }
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <RiskIndicator level={riskLevel} />
-      
+
       <View style={styles.dataContainer}>
-        <Text style={styles.dataText}>Umidade: {humidity}%</Text>
-        <Text style={styles.dataText}>Inclinação: {inclination}°</Text>
+        <Text style={styles.dataTitle}>DADOS DOS SENSORES</Text>
+        <View style={styles.dataRow}>
+          <Text style={styles.dataLabel}>Umidade:</Text>
+          <Text style={styles.dataValue}>{humidity}%</Text>
+        </View>
+        <View style={styles.dataRow}>
+          <Text style={styles.dataLabel}>Inclinação:</Text>
+          <Text style={styles.dataValue}>{inclination}°</Text>
+        </View>
+        <View style={styles.dataRow}>
+          <Text style={styles.dataLabel}>Chuva:</Text>
+          <Text style={styles.dataValue}>{rain}mm/h</Text>
+        </View>
+        <View style={styles.dataRow}>
+          <Text style={styles.dataLabel}>Vibração:</Text>
+          <Text style={styles.dataValue}>{vibration}Hz</Text>
+        </View>
       </View>
 
       <Text style={styles.description}>{getRiskDescription()}</Text>
 
-      <TouchableOpacity 
-        style={styles.mitigationButton}
-        onPress={() => navigation.navigate('Mitigation', { riskLevel: riskLevel })}
-      >
-        <Text>Ver Ações Preventivas</Text>
-      </TouchableOpacity>
+      <ActuatorSimulation riskLevel={riskLevel} />
 
       <TouchableOpacity 
         style={styles.backButton}
@@ -43,54 +67,56 @@ export default function RiskViewScreen() {
       >
         <Text style={styles.backButtonText}>Nova Análise</Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
+  container: {
     padding: 20,
     backgroundColor: '#f5f5f5'
   },
   dataContainer: {
     backgroundColor: '#fff',
-    padding: 15,
     borderRadius: 10,
+    padding: 15,
     marginVertical: 15,
     elevation: 2
   },
-  dataText: {
-    fontSize: 16,
+  dataTitle: {
+    fontWeight: 'bold',
+    color: '#2E86C1',
+    marginBottom: 10,
+    fontSize: 16
+  },
+  dataRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginVertical: 5
+  },
+  dataLabel: {
+    color: '#555',
+    fontSize: 16
+  },
+  dataValue: {
+    fontWeight: '600',
+    color: '#333'
   },
   description: {
     fontSize: 16,
+    lineHeight: 24,
     marginVertical: 15,
-    lineHeight: 24
-  },
-  mitigationButton: {
-    backgroundColor: '#E74C3C',
-    padding: 15,
-    borderRadius: 10,
-    marginTop: 20,
-    alignItems: 'center'
-  },
-  mitigationButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 16
+    textAlign: 'center'
   },
   backButton: {
+    backgroundColor: '#2E86C1',
     padding: 15,
     borderRadius: 10,
-    marginTop: 15,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#2E86C1'
+    marginTop: 10,
+    alignItems: 'center'
   },
   backButtonText: {
-    color: '#2E86C1',
+    color: 'white',
     fontWeight: 'bold',
     fontSize: 16
   }

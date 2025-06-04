@@ -2,26 +2,31 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const STORAGE_KEY = '@monitoramento_deslizamentos:readings';
 
-export const saveReading = async (newReading) => {
+interface Reading {
+  humidity: number;
+  inclination: number;
+  rain: number;
+  vibration: number;
+  date: string;
+  riskLevel: 'baixo' | 'médio' | 'alto';
+}
+
+export const saveReading = async (newReading: Reading) => {
   try {
     const currentData = await getReadings();
     const updatedData = [...currentData, newReading];
     await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedData));
-    console.log('Dado salvo com sucesso:', newReading); // Debug
-    return true;
   } catch (e) {
-    console.error('Erro ao salvar:', e);
-    return false;
+    console.error('Erro ao salvar dados:', e);
   }
 };
 
-export const getReadings = async () => {
+export const getReadings = async (): Promise<Reading[]> => {
   try {
     const jsonValue = await AsyncStorage.getItem(STORAGE_KEY);
-    console.log('Dados recuperados:', jsonValue); // Debug
     return jsonValue ? JSON.parse(jsonValue) : [];
   } catch (e) {
-    console.error('Erro ao ler:', e);
+    console.error('Erro ao carregar dados:', e);
     return [];
   }
 };
@@ -29,9 +34,7 @@ export const getReadings = async () => {
 export const clearReadings = async () => {
   try {
     await AsyncStorage.removeItem(STORAGE_KEY);
-    return true;
   } catch (e) {
-    console.error('Erro ao limpar:', e);
-    return false;
+    console.error('Erro ao limpar dados:', e);
   }
 };
